@@ -1,5 +1,7 @@
 package com.ecore.roles.service;
 
+import com.ecore.roles.client.TeamsClient;
+import com.ecore.roles.client.model.Team;
 import com.ecore.roles.exception.InvalidArgumentException;
 import com.ecore.roles.exception.ResourceExistsException;
 import com.ecore.roles.model.Membership;
@@ -11,18 +13,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
-import static com.ecore.roles.utils.TestData.DEFAULT_MEMBERSHIP;
-import static com.ecore.roles.utils.TestData.DEVELOPER_ROLE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static com.ecore.roles.utils.TestData.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MembershipsServiceTest {
@@ -37,18 +36,25 @@ class MembershipsServiceTest {
     private UsersService usersService;
     @Mock
     private TeamsService teamsService;
+    @Mock
+    private TeamsClient teamsClient;
 
     @Test
     public void shouldCreateMembership() {
         Membership expectedMembership = DEFAULT_MEMBERSHIP();
+        Team ordinaryCoralLynxTeam = ORDINARY_CORAL_LYNX_TEAM();
         when(roleRepository.findById(expectedMembership.getRole().getId()))
                 .thenReturn(Optional.ofNullable(DEVELOPER_ROLE()));
         when(membershipRepository.findByUserIdAndTeamId(expectedMembership.getUserId(),
                 expectedMembership.getTeamId()))
-                        .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
         when(membershipRepository
                 .save(expectedMembership))
-                        .thenReturn(expectedMembership);
+                .thenReturn(expectedMembership);
+        when(teamsClient.getTeam(expectedMembership.getTeamId()))
+                .thenReturn(ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(ordinaryCoralLynxTeam));
 
         Membership actualMembership = membershipsService.assignRoleToMembership(expectedMembership);
 
@@ -68,7 +74,7 @@ class MembershipsServiceTest {
         Membership expectedMembership = DEFAULT_MEMBERSHIP();
         when(membershipRepository.findByUserIdAndTeamId(expectedMembership.getUserId(),
                 expectedMembership.getTeamId()))
-                        .thenReturn(Optional.of(expectedMembership));
+                .thenReturn(Optional.of(expectedMembership));
 
         ResourceExistsException exception = assertThrows(ResourceExistsException.class,
                 () -> membershipsService.assignRoleToMembership(expectedMembership));

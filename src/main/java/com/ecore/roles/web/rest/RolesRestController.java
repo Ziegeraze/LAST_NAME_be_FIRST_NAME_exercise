@@ -1,11 +1,10 @@
 package com.ecore.roles.web.rest;
 
-import com.ecore.roles.exception.ResourceNotFoundException;
-import com.ecore.roles.model.Role;
 import com.ecore.roles.service.RolesService;
 import com.ecore.roles.web.RolesApi;
 import com.ecore.roles.web.dto.RoleDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +29,7 @@ public class RolesRestController implements RolesApi {
     public ResponseEntity<RoleDto> createRole(
             @Valid @RequestBody RoleDto role) {
         return ResponseEntity
-                .status(200)
+                .status(HttpStatus.CREATED)
                 .body(fromModel(rolesService.createRole(role.toModel())));
     }
 
@@ -40,7 +39,7 @@ public class RolesRestController implements RolesApi {
     public ResponseEntity<List<RoleDto>> getRoles() {
 
         return ResponseEntity
-                .status(200)
+                .status(HttpStatus.OK)
                 .body(rolesService.getRoles().stream()
                         .map(RoleDto::fromModel)
                         .collect(Collectors.toList()));
@@ -53,7 +52,7 @@ public class RolesRestController implements RolesApi {
     public ResponseEntity<RoleDto> getRole(
             @PathVariable UUID roleId) {
         return ResponseEntity
-                .status(200)
+                .status(HttpStatus.OK)
                 .body(fromModel(rolesService.getRole(roleId)));
     }
 }

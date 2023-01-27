@@ -23,6 +23,11 @@ public class DefaultExceptionHandler {
         return createResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getMessage());
     }
 
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handle(InvalidMembershipException exception) {
+        return createResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
+
     private ResponseEntity<ErrorResponse> createResponse(int status, String exception) {
         return ResponseEntity
                 .status(status)
