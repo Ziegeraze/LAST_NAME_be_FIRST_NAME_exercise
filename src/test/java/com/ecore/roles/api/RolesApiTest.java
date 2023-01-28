@@ -151,13 +151,13 @@ public class RolesApiTest {
     @Test
     void shouldFailToGetRoleByUserIdAndTeamIdWhenMissingTeamId() {
         getRole(GIANNI_USER_UUID, null)
-                .validate(400, "Bad Request");
+                .validate(HttpStatus.BAD_REQUEST.value(), "Bad Request");
     }
 
     @Test
     void shouldFailToGetRoleByUserIdAndTeamIdWhenItDoesNotExist() {
         mockGetTeamById(mockServer, UUID_1, null);
         getRole(GIANNI_USER_UUID, UUID_1)
-                .validate(HttpStatus.NOT_FOUND.value() format("Team %s not found", UUID_1));
+                .validate(HttpStatus.NOT_FOUND.value(), format("Membership %s not found", UUID_1));
     }
 }
