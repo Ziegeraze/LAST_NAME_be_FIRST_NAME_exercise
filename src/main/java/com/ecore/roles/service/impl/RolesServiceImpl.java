@@ -17,8 +17,6 @@ import java.util.UUID;
 @Service
 public class RolesServiceImpl implements RolesService {
 
-    public static final String DEFAULT_ROLE = "Developer";
-
     private final RoleRepository roleRepository;
     @Autowired
     public RolesServiceImpl(RoleRepository roleRepository) {
@@ -44,8 +42,4 @@ public class RolesServiceImpl implements RolesService {
         return roleRepository.findAll();
     }
 
-    private Role getDefaultRole() {
-        return roleRepository.findByName(DEFAULT_ROLE)
-                .orElseThrow(() -> new IllegalStateException("Default role is not configured"));
-    }
 }

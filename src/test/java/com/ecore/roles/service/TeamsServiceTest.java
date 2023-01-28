@@ -20,17 +20,17 @@ import static org.mockito.Mockito.when;
 class TeamsServiceTest {
 
     @InjectMocks
-    private TeamsServiceImpl TeamsService;
+    private TeamsServiceImpl teamsService;
     @Mock
-    private TeamsClient TeamsClient;
+    private TeamsClient teamsClient;
 
     @Test
     void shouldGetTeamWhenTeamIdExists() {
         Team ordinaryCoralLynxTeam = ORDINARY_CORAL_LYNX_TEAM();
-        when(TeamsClient.getTeam(ORDINARY_CORAL_LYNX_TEAM_UUID))
+        when(teamsClient.getTeam(ORDINARY_CORAL_LYNX_TEAM_UUID))
                 .thenReturn(ResponseEntity
                         .status(HttpStatus.OK)
                         .body(ordinaryCoralLynxTeam));
-        assertNotNull(TeamsService.getTeam(ORDINARY_CORAL_LYNX_TEAM_UUID));
+        assertNotNull(teamsService.getTeam(ORDINARY_CORAL_LYNX_TEAM_UUID));
     }
 }
